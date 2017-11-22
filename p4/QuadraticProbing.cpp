@@ -90,7 +90,7 @@
 /* 1*/      int collisionNum = 0;
 /* 2*/      int currentPos = hash( i, array.size( ) );
 
-/* 3*/      while( array[ currentPos ].element != NULL && array[ currentPos ].index != i )
+/* 3*/      while( array[ currentPos ].element != ITEM_NOT_FOUND && array[ currentPos ].index != i )
             {
                 collisionNum++;
 /* 4*/          currentPos += collisionNum;  // Compute ith probe
@@ -110,6 +110,7 @@
         {
             int currentPos = findPos( index );
             array[ currentPos ] = HashEntry();
+            currentSize--;
         }
 
         /**
@@ -130,8 +131,10 @@
         void QuadraticHashTable<HashedObj>::makeEmpty( )
         {
             currentSize = 0;
-            for( int i = 0; i < array.size( ); i++ )
+            for( int i = 0; i < array.size( ); i++ ) {
                 array[ i ] = HashEntry();
+                array[ i ].element = ITEM_NOT_FOUND;
+            }
         }
 
         /**
