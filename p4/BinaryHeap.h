@@ -3,6 +3,7 @@
 
         #include "dsexceptions.h"
         #include "vector.h"
+        #include "mynew.h"
 
         // BinaryHeap class
         //
@@ -35,7 +36,7 @@
             void makeEmpty( );
 
           private:
-            int                currentSize;  // Number of elements in heap
+            int currentSize;  // Number of elements in heap
             vector<Comparable> array;        // The heap array
 
             void buildHeap( );
