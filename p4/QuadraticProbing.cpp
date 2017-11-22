@@ -57,7 +57,7 @@
                 // Insert x as active
             int currentPos = findPos( index );
             array[ currentPos ] = HashEntry( x, index );
-
+            currentSize++;
         }
 
         /**
@@ -186,4 +186,9 @@
         {
             if( key < 0 ) key = -key;
             return key % tableSize;
+        }
+        
+        template <class HashedObj>
+        int QuadraticHashTable<HashedObj>::getCurrentSize() {
+          return currentSize;
         }

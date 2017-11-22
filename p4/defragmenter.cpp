@@ -17,7 +17,7 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
   QuadraticHashTable<int> * diskManage = new QuadraticHashTable<int> (NULL, 200000);
   
   //creating nullList
-  BinaryHeap<int> * nullList = new BinaryHeap<int> (capacity / 4);
+  BinaryHeap<int> * nullList = new BinaryHeap<int> (200000);
   int a = capacity;
   //int nullCount = 0;
   while (/*nullCount <= 40000 && */a >= 2) {

@@ -32,7 +32,7 @@
             void makeEmpty( );
             void insert( const HashedObj & x, int index );
             void remove( int index );
-
+            int getCurrentSize();
             const QuadraticHashTable & operator=( const QuadraticHashTable & rhs );
 
           private:

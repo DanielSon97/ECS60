@@ -63,6 +63,7 @@ class DiskDrive
   unsigned capacity;
   static int diskAccesses;
   DiskBlockInfo *disk;
+  
 public:
   DirectoryEntry *directory;
   bool *FAT;
@@ -78,6 +79,7 @@ public:
     disk[diskBlockID] = diskBlock->blockInfo;
     diskAccesses++;
   }  // copies diskBlockInfo
+  //void print();
   void check();    
 } ;  // DiskDrive class
 

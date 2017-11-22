@@ -86,8 +86,17 @@ int main(int argc, char *argv[])
   new Defragmenter(&diskDrive);
   cout << "CPU Time: " << ct.cur_CPUTime() << " Disk accesses: "
     << diskDrive.getDiskAccesses() << " RAM: " << maxRAM << endl;
+  //diskDrive.print();
   diskDrive.check();
   return 0;
 }  // main
 
+/*void DiskDrive::print()
+{
+  for (unsigned i = 0; i < capacity; i++)
+  {
+    cout << i << " " << disk[i].fileID << " " << disk[i].fileBlockNum << " "<< disk[i].nextBlockID << "\n";
+  }
+} // print
+*/
 
