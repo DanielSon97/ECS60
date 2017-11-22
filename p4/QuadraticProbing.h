@@ -41,7 +41,7 @@
                 HashedObj element;
                 int index;
 
-                HashEntry( const HashedObj & e = NULL, int i = 0)
+                HashEntry( const HashedObj & e = HashedObj(), int i = 0)
                   : element( e ), index( i ) { }
             };
 
