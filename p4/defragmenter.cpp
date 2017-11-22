@@ -14,7 +14,7 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
   QuadraticHashTable<DiskBlock *> * diskStore = new QuadraticHashTable<DiskBlock *> (NULL, 30000);
 
   //creating diskIndex
-  QuadraticHashTable<int> * diskManage = new QuadraticHashTable<int> (NULL, 200000);
+  QuadraticHashTable<int> * diskManage = new QuadraticHashTable<int> (-1, 200000);
   
   //creating nullList
   BinaryHeap<int> * nullList = new BinaryHeap<int> (200000);
@@ -22,20 +22,19 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
   //int nullCount = 0;
   while (/*nullCount <= 40000 && */a >= 2) {
     if (diskDrive->FAT[a] == false) {
-      nullList->insert(a);
+      nullList->insert(-a);
       //nullCount++;
     }
     a--;
   }
   
-  //int nullMin = a;
+  //int  = a;
   
   //hash in 
   int block;
   int index = 2;
   int nullMin;
   int returnBlock;
-  int tempBlock;
   
   DiskBlock * currentBlock;
   DiskBlock * writeBlock;
@@ -65,7 +64,7 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
               
               if (returnBlock >= index) {
                 diskDrive->FAT[returnBlock] = false;
-                nullList->insert(returnBlock);
+                nullList->insert(-returnBlock);
                 returnBlock = 0;
               }
               else {
@@ -106,7 +105,7 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
           if (diskDrive->FAT[index] == false) {
             diskDrive->writeDiskBlock(currentBlock, index);
             diskDrive->FAT[block] = false;
-            nullList->insert(block);
+            nullList->insert(-block);
             block = currentBlock->getNext();
             delete currentBlock;
           }
@@ -116,7 +115,7 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
               diskStore->insert(currentBlock, index);
               block = currentBlock->getNext();
               diskDrive->FAT[block] = false;
-              nullList->insert(block);
+              nullList->insert(-block);
               block = currentBlock->getNext();
             }
             else { //insert into manage
