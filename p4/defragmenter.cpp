@@ -9,27 +9,30 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
   //copying over constants from diskDrive
   int numFiles = diskDrive->getNumFiles();
   int capacity = diskDrive->getCapacity();
+  int storeSize = 19500;
+  int storeMax = storeSize / 2;
+  
   
   //creating diskStore
-  QuadraticHashTable<DiskBlock *> * diskStore = new QuadraticHashTable<DiskBlock *> (NULL, 30000);
+  QuadraticHashTable<DiskBlock *> * diskStore = new QuadraticHashTable<DiskBlock *> (NULL, storeSize);
 
   //creating diskManage
   QuadraticHashTable<int> * diskManage = new QuadraticHashTable<int> (0, 200000);
   
   //creating nullList
-  //int maxNull = capacity / 5; 
-  BinaryHeap<int> * nullList = new BinaryHeap<int> (1000000);
+  int maxNull = capacity / 2; 
+  BinaryHeap<int> * nullList = new BinaryHeap<int> (maxNull);
   int a = capacity;
   int nullCount = 0;
-  //int cutOff = (maxNull / 4) * 3;
-  while (/*nullCount <= 50000 && */a >= 2) {
-    if (diskDrive->FAT[a] == false) {
-      nullList->insert(-a);
+  int cutOff = (maxNull / 3) * 2;
+  while (nullCount <= cutOff && a >= 2) {
+    if (!diskDrive->FAT[a]) {
+      nullList->insert(a);
       nullCount++;
     }
     a--;
   }
-  int minNull = 0;
+  int minNull = (capacity / 5) * 3;
   
   //hash in 
   int block;
@@ -69,7 +72,7 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
               if (returnBlock >= index) {
                 diskDrive->FAT[returnBlock] = false;
                 if (returnBlock > minNull && !nullList->isFull()) {
-                  nullList->insert(-returnBlock);
+                  nullList->insert(returnBlock);
                 }
                 recheck = false;
               }
@@ -81,22 +84,21 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
             }
           } while (recheck);
                     
-          if (diskDrive->FAT[index] == false) { //insert new read into index if open
+          if (!diskDrive->FAT[index]) { //insert new read into index if open
             diskDrive->writeDiskBlock(currentBlock, index);
             block = currentBlock->getNext();
             diskDrive->FAT[index] = true;
             delete currentBlock;
           }
           else { //store new read into store/manage
-            if (diskStore->getCurrentSize() < 15000) { //insert into store
+            if (diskStore->getCurrentSize() < storeMax) { //insert into store
               diskStore->insert(currentBlock, index);
               block = currentBlock->getNext();
             }
             else { //insert into manage
               do {
-                nullMin = -nullList->findMin();
-                nullList->deleteMin();
-              } while (diskDrive->FAT[nullMin] != false);
+                nullList->deleteMin(nullMin);
+              } while (diskDrive->FAT[nullMin]);
               
               diskManage->insert(nullMin, index);
               diskDrive->writeDiskBlock(currentBlock, nullMin);
@@ -108,34 +110,33 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
         }
         
         else { //block > index
-          if (diskDrive->FAT[index] == false) {
+          if (!diskDrive->FAT[index]) {
             diskDrive->writeDiskBlock(currentBlock, index);
             diskDrive->FAT[index] = true;
             diskDrive->FAT[block] = false;
             if (block > minNull && !nullList->isFull()) {
-              nullList->insert(-block);
+              nullList->insert(block);
             }
             block = currentBlock->getNext();
             delete currentBlock;
           }
           else { //store new read into store/manage
-            if (diskStore->getCurrentSize() < 15000) { //insert into store
+            if (diskStore->getCurrentSize() < storeMax) { //insert into store
               diskStore->insert(currentBlock, index);
               diskDrive->FAT[block] = false;
               if (block > minNull && !nullList->isFull()) {
-                nullList->insert(-block);
+                nullList->insert(block);
               }
               block = currentBlock->getNext();
             }
             else { //insert into manage
               do {
-                nullMin = -nullList->findMin();
-                nullList->deleteMin();
-              } while (diskDrive->FAT[nullMin] != false);
+                nullList->deleteMin(nullMin);
+              } while (diskDrive->FAT[nullMin]);
               
               diskDrive->FAT[block] = false;
               if (block > minNull && !nullList->isFull()) {
-                nullList->insert(-block);
+                nullList->insert(block);
               }
               diskManage->insert(nullMin, index);
               diskDrive->writeDiskBlock(currentBlock, nullMin);
