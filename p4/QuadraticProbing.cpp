@@ -54,8 +54,15 @@
         template <class HashedObj>
         void QuadraticHashTable<HashedObj>::insert( const HashedObj & x, int index )
         {
-                // Insert x as active
-            int currentPos = findPos( index );
+        
+            int currentPos = hash( index, array.size( ) );
+
+/* 3*/      while( array[ currentPos ].index > 0 )
+            {
+/* 4*/          currentPos ++;  // Compute ith probe
+/* 5*/          if( currentPos >= array.size( ) )
+/* 6*/              currentPos -= array.size( );
+            }
             array[ currentPos ] = HashEntry( x, index );
             currentSize++;
         }
@@ -90,7 +97,7 @@
 /* 1*/ 
 /* 2*/      int currentPos = hash( i, array.size( ) );
 
-/* 3*/      while( array[ currentPos ].element != ITEM_NOT_FOUND && array[ currentPos ].index != i )
+/* 3*/      while( array[ currentPos ].index != 0 && array[ currentPos ].index != i )
             {
 /* 4*/          currentPos ++;  // Compute ith probe
 /* 5*/          if( currentPos >= array.size( ) )
@@ -108,8 +115,8 @@
         void QuadraticHashTable<HashedObj>::remove( int index )
         {
             int currentPos = findPos( index );
-            array[ currentPos ] = HashEntry();
-            array[ currentPos ].element = 
+            array[ currentPos ].index = -1;
+            array[ currentPos ].element = ITEM_NOT_FOUND;
             currentSize--;
         }
 
