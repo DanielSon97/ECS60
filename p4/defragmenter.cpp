@@ -40,6 +40,7 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
   DiskBlock * writeBlock;
   DiskBlock * tempBlock;
   int returnBlock;
+  bool recheck = false;
   
   for (int b = 0; b < numFiles; b++) {
     block = diskDrive->directory[b].getFirstBlockID();
@@ -55,6 +56,7 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
               diskDrive->writeDiskBlock(tempBlock, block);
               delete tempBlock;
               diskStore->remove(block);
+              recheck = false;
             }
             
             else { //DiskBlock is in Manage
@@ -69,13 +71,15 @@ Defragmenter::Defragmenter(DiskDrive *diskDrive)
                 if (returnBlock > minNull && !nullList->isFull()) {
                   nullList->insert(-returnBlock);
                 }
+                recheck = false;
               }
               else {
                 //remanaging block for loop
                 block = returnBlock;
+                recheck = true;
               }
             }
-          } while (tempBlock != NULL && block == returnBlock);
+          } while (recheck);
                     
           if (diskDrive->FAT[index] == false) { //insert new read into index if open
             diskDrive->writeDiskBlock(currentBlock, index);
