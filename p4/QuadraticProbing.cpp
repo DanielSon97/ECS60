@@ -87,13 +87,12 @@
         template <class HashedObj>
         int QuadraticHashTable<HashedObj>::findPos( int i ) const
         {
-/* 1*/      int collisionNum = 0;
+/* 1*/ 
 /* 2*/      int currentPos = hash( i, array.size( ) );
 
 /* 3*/      while( array[ currentPos ].element != ITEM_NOT_FOUND && array[ currentPos ].index != i )
             {
-                collisionNum++;
-/* 4*/          currentPos += collisionNum;  // Compute ith probe
+/* 4*/          currentPos ++;  // Compute ith probe
 /* 5*/          if( currentPos >= array.size( ) )
 /* 6*/              currentPos -= array.size( );
             }
@@ -110,6 +109,7 @@
         {
             int currentPos = findPos( index );
             array[ currentPos ] = HashEntry();
+            array[ currentPos ].element = 
             currentSize--;
         }
 
