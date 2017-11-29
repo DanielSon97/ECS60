@@ -18,12 +18,9 @@
         template <class Comparable>
         void BinaryHeap<Comparable>::insert( const Comparable & x )
         {
-            if( isFull( ) )
-                throw Overflow( );
-
                 // Percolate up
             int hole = ++currentSize;
-            for( ; hole > 1 && x < array[ hole / 2 ]; hole /= 2 )
+            for( ; hole > 1 && x > array[ hole / 2 ]; hole /= 2 )
                 array[ hole ] = array[ hole / 2 ];
             array[ hole ] = x;
         }
@@ -35,8 +32,6 @@
         template <class Comparable>
         const Comparable & BinaryHeap<Comparable>::findMin( ) const
         {
-            if( isEmpty( ) )
-                throw Underflow( );
             return array[ 1 ];
         }
 
@@ -47,9 +42,6 @@
         template <class Comparable>
         void BinaryHeap<Comparable>::deleteMin( )
         {
-            if( isEmpty( ) )
-                throw Underflow( );
-
             array[ 1 ] = array[ currentSize-- ];
             percolateDown( 1 );
         }
@@ -61,9 +53,6 @@
         template <class Comparable>
         void BinaryHeap<Comparable>::deleteMin( Comparable & minItem )
         {
-            if( isEmpty( ) )
-                throw Underflow( );
-
             minItem = array[ 1 ];
             array[ 1 ] = array[ currentSize-- ];
             percolateDown( 1 );
@@ -122,7 +111,7 @@
 /* 3*/      for( ; hole * 2 <= currentSize; hole = child )
             {
 /* 4*/          child = hole * 2;
-/* 5*/          if( child != currentSize && array[ child + 1 ] < array[ child ] )
+/* 5*/          if( child != currentSize && array[ child + 1 ] > array[ child ] )
 /* 6*/              child++;
 /* 7*/          if( array[ child ] > tmp )
 /* 8*/              array[ hole ] = array[ child ];
